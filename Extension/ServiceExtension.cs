@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolSync.DAL.EFCore;
-using SchoolSync.DAL.Repositories.Interface;
+using SchoolSync.DAL.Repositories.Interfaces;
 using SchoolSync.DAL.Repositories.Queries;
 
 namespace SchoolSync.Extension 
@@ -28,7 +28,8 @@ namespace SchoolSync.Extension
         
         public static void ConfigService(this IServiceCollection services)
         {
-            services.AddScoped<IDevisionRepository,QDivision>();
+            services.AddScoped<IDivisionRepository,QDivision>();
+            services.AddScoped<IPositionRepository,QPosition>();
         }
 
 	}

@@ -1,3 +1,10 @@
+global using System.ComponentModel.DataAnnotations;
+global using SchoolSync.DAL.Repositories.Interfaces;
+global using SchoolSync.DAL.Entities;
+global using SchoolSync.DAL.Repositories.Response;
+global using SchoolSync.DAL.EFCore;
+global using Microsoft.EntityFrameworkCore;
+global using SchoolSync.DAL.Helper;
 using SchoolSync.Extension;
 
 var builder = WebApplication.CreateBuilder(args);

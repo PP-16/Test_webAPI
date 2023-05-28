@@ -5,34 +5,46 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SchoolSync.DAL.EFCore;
 using SchoolSync.DAL.Entities;
-
 using SchoolSync.DAL.Repositories.Interfaces;
 using SchoolSync.DAL.Repositories.Response;
 
 namespace SchoolSync.DAL.Repositories.Queries
 {
-    public class QDivision : IDivisionRepository
+    public class QPosition : IPositionRepository
     {
         private readonly SchoolSyncDbContext db;
 
-        public QDivision(SchoolSyncDbContext dbContext)
+        public QPosition(SchoolSyncDbContext dbContext)
         {
             db = dbContext;
         }
-
-        public async Task<string> CreateDivisionAsync(Division division)
+        public async Task<string> CreatePositionAsync(Position position)
         {
-            await db.Division.AddAsync(division);
+            await db.Position.AddAsync(position);
             await db.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
+
+        public async Task<bool> DeleteData(int code)
+        {
+            var query = db.Division.FirstOrDefault(x => x.DivisionCode.Equals(code));
+            query.IsUsed = query.IsUsed.ToString() == "1" ? "0" : "1";
+            db.Entry(query).State = EntityState.Modified;
+            int save = await db.SaveChangesAsync();
+            if (save > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await db.Division.ToListAsync<object>();
-
+            var query = await db.Position.ToListAsync<object>();
             Pagination pagination = new Pagination(query,currentPage,pageSize);
-
-
             // int totalRow = 0;
             // totalRow = query.Count;
             // var totalPage = (double)totalRow / pageSize;
@@ -53,24 +65,6 @@ namespace SchoolSync.DAL.Repositories.Queries
                 },
                 Data = pagination.Data
             };
-
-        }
-
-        //ลบข้อมูล
-        public async Task<bool> DeleteData(int code)
-        {
-            var query = db.Division.FirstOrDefault(x => x.DivisionCode.Equals(code));
-            query.IsUsed = query.IsUsed.ToString() == "1" ? "0" : "1";
-            db.Entry(query).State = EntityState.Modified;
-            int save = await db.SaveChangesAsync();
-            if (save > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

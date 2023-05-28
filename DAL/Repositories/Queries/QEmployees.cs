@@ -2,36 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using SchoolSync.DAL.EFCore;
-using SchoolSync.DAL.Entities;
-
-using SchoolSync.DAL.Repositories.Interfaces;
-using SchoolSync.DAL.Repositories.Response;
 
 namespace SchoolSync.DAL.Repositories.Queries
 {
-    public class QDivision : IDivisionRepository
+    public class QEmployees:IEmployees
     {
-        private readonly SchoolSyncDbContext db;
-
-        public QDivision(SchoolSyncDbContext dbContext)
+               private readonly SchoolSyncDbContext db;
+        public QEmployees(SchoolSyncDbContext schoolSyncDb)
         {
-            db = dbContext;
+            db = schoolSyncDb;
+
         }
-
-        public async Task<string> CreateDivisionAsync(Division division)
+        public async Task<string>  CreateEmployeesTypeAsync(Employees employees)
         {
-            await db.Division.AddAsync(division);
+            await db.Employees.AddAsync(employees);
             await db.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
+
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await db.Division.ToListAsync<object>();
-
-            Pagination pagination = new Pagination(query,currentPage,pageSize);
-
+            var query = await db.Employees.ToListAsync<object>();
+             Pagination pagination = new Pagination(query,currentPage,pageSize);
 
             // int totalRow = 0;
             // totalRow = query.Count;
@@ -53,13 +45,11 @@ namespace SchoolSync.DAL.Repositories.Queries
                 },
                 Data = pagination.Data
             };
-
         }
-
-        //ลบข้อมูล
+          //ลบข้อมูล
         public async Task<bool> DeleteData(int code)
         {
-            var query = db.Division.FirstOrDefault(x => x.DivisionCode.Equals(code));
+            var query = db.Employees.FirstOrDefault(x => x.EmpCode.Equals(code));
             query.IsUsed = query.IsUsed.ToString() == "1" ? "0" : "1";
             db.Entry(query).State = EntityState.Modified;
             int save = await db.SaveChangesAsync();
